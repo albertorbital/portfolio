@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alberto Rodríguez — Personal Art</title>
+  <link rel="preload" href="../assets/fonts/Chunko.woff" as="font" type="font/woff" crossorigin>
+
+  <style>
+    @font-face {
+      font-family: 'Chunko';
+      src: url('../assets/fonts/Chunko.woff') format('woff'),
+           url('../assets/fonts/Chunko Bold Demo.ttf') format('truetype');
+      font-weight: 900;
+      font-style: normal;
+      font-display: block;
+    }
+    @font-face {
+      font-family: 'DM Sans';
+      src: url('../assets/fonts/dm-sans-400.woff2') format('woff2');
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'DM Sans';
+      src: url('../assets/fonts/dm-sans-500.woff2') format('woff2');
+      font-weight: 500; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'DM Sans';
+      src: url('../assets/fonts/dm-sans-600.woff2') format('woff2');
+      font-weight: 600; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'DM Sans';
+      src: url('../assets/fonts/dm-sans-700.woff2') format('woff2');
+      font-weight: 700; font-style: normal; font-display: swap;
+    }
+html { scroll-behavior: smooth; height: 100%; }
+
+    @media (pointer: fine) { * { cursor: none !important; } }
+
+    
+    #cursor-blob {
+      position: fixed; top: 0; left: 0;
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      background: var(--gold);
+      filter: blur(8px);
+      mix-blend-mode: multiply;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 99999;
+      transition: width 200ms cubic-bezier(0.16,1,0.3,1),
+                  height 500ms cubic-bezier(0.16,1,0.3,1),
+                  background 400ms cubic-bezier(0.16,1,0.3,1),
+                  filter 400ms cubic-bezier(0.16,1,0.3,1),
+                  opacity 200ms;
+      opacity: 0;
+    }
+    #cursor-blob.is-visible { opacity: 1; }
+    #cursor-blob.is-hovering { width: 60px; height: 60px; background: var(--coral); filter: blur(4px); }
+
+    
+    #cursor-planet {
+      position: fixed; pointer-events: none; z-index: 99998;
+      opacity: 0; transition: opacity 200ms cubic-bezier(0.16,1,0.3,1);
+      width: 52px; height: 52px;
+    }
+    #cursor-planet.is-visible { opacity: 1; }
+    #cursor-planet svg { width: 100%; height: 100%; }
+    #cursor-planet.is-hovering svg {
+      filter: drop-shadow(0 0 6px rgba(240,192,64,0.6));
+      transform: scale(1.15);
+      transition: transform 200ms cubic-bezier(0.16,1,0.3,1), filter 200ms;
+    }
+
+    
+    .cursor-sparkle {
+      position: fixed; pointer-events: none; z-index: 99997; border-radius: 50%;
+      transform: translate(-50%,-50%) scale(1);
+      animation: sparkle-out 200ms cubic-bezier(0.16,1,0.3,1) forwards;
+    }
+    @keyframes sparkle-out {
+      0%   { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%,-50%) scale(0); }
+    }
+
+    
+    #cursor-halo {
+      position: fixed; pointer-events: none; z-index: 99996;
+      width: 68px; height: 68px; border-radius: 50%;
+      border: 1.5px solid rgba(240,192,64,0.5);
+      background: rgba(240,192,64,0.08);
+      transform: translate(-50%,-50%) scale(0.6); opacity: 0;
+      transition: opacity 200ms cubic-bezier(0.16,1,0.3,1),
+                  transform 280ms cubic-bezier(0.16,1,0.3,1);
+    }
+    #cursor-halo.is-visible { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --cream:  #F5F0E8;
+      --dark:   #0D1F3C;
+      --teal:   #38BEB5;
+      --coral:  #E06B52;
+      --rose:   #C75878;
+      --gold:   #F0C040;
+      --violet: #7A5290;
+      --forest: #1B4D3E;
+    }
+
+    body {
+      background-color: var(--dark);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--dark);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 998; pointer-events: none;
+      opacity: 0.10;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px;
+    }
+
+    
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 52px;
+    }
+    .nav-logo {
+      font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 17px;
+      line-height: 1.25; letter-spacing: 0; text-decoration: none; color: var(--cream);
+      transition: color 150ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .nav-logo:hover { color: var(--gold); }
+    .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+    .nav-links a {
+      font-size: 16px; font-weight: 500; text-decoration: none; color: var(--cream);
+      letter-spacing: 0.1px; transition: color 120ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .nav-links a:not(.nav-cta) { position: relative; padding: 5px 10px; }
+    .nav-links a:not(.nav-cta):hover { color: var(--gold); }
+    .nav-stroke-svg { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+    .nav-stroke-rect { fill: none; stroke: var(--gold); stroke-width: 2; }
+    .nav-cta {
+      display: inline-flex !important; align-items: center; gap: 5px;
+      padding: 10px 22px !important; background: var(--dark) !important;
+      color: var(--cream) !important; border-radius: 100px !important;
+      font-weight: 700 !important; font-size: 13px !important; letter-spacing: 0.4px;
+      position: relative !important; overflow: hidden !important; z-index: 0 !important;
+      box-shadow: 0 4px 0 #060d1c !important;
+      transition: color 200ms cubic-bezier(0.16,1,0.3,1),
+                  transform 80ms cubic-bezier(0.16,1,0.3,1),
+                  box-shadow 80ms cubic-bezier(0.16,1,0.3,1) !important;
+    }
+    .nav-cta::before {
+      content: ''; position: absolute; inset: 0; background: var(--gold);
+      border-radius: inherit; transform: scaleY(0); transform-origin: bottom center;
+      transition: transform 200ms cubic-bezier(0.16,1,0.3,1); z-index: -1;
+    }
+    .nav-cta:hover::before { transform: scaleY(1); }
+    .nav-cta:hover { color: var(--dark) !important; box-shadow: 0 4px 0 #a8840a !important; }
+    .nav-cta:active { transform: translateY(4px) !important; box-shadow: none !important; transition-duration: 60ms !important; }
+    nav.is-scrolled .nav-cta { background: var(--cream) !important; color: var(--dark) !important; box-shadow: 0 4px 0 #c8c2b8 !important; }
+    nav.is-scrolled .nav-cta::before { background: var(--gold); }
+    nav.is-scrolled .nav-cta:hover { color: var(--dark) !important; box-shadow: 0 4px 0 #a8840a !important; }
+    nav.is-scrolled .nav-cta:active { box-shadow: none !important; }
+
+    
+    .nav-social { display: none; }
+
+    .nav-toggle {
+      display: none;
+      position: relative;
+      width: 44px;
+      height: 44px;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      z-index: 210;
+    }
+    .nav-toggle span {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      height: 2.5px;
+      border-radius: 2px;
+      background: var(--cream);
+      transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1),
+                  opacity 200ms linear,
+                  background 200ms linear;
+    }
+    .nav-toggle span:nth-child(1) { top: 15px; }
+    .nav-toggle span:nth-child(2) { top: 21px; }
+    .nav-toggle span:nth-child(3) { top: 27px; }
+    .nav-toggle.is-open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    .nav-toggle.is-open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.is-open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+    
+    .work {
+      --reel-w: min(100%, calc(70.4vh * 16 / 9));
+      background: var(--forest);
+      padding: 140px 32px 0;
+      position: relative;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      overflow-x: clip;
+    }
+    
+    .work::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      height: 42vh;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(120% 80% at 70% 120%,
+          rgba(13,31,60,0.55) 0%, transparent 60%),
+        linear-gradient(to bottom,
+          rgba(13,31,60,0) 0%,
+          rgba(13,31,60,0.25) 38%,
+          rgba(13,31,60,0.65) 68%,
+          rgba(13,31,60,0.92) 88%,
+          var(--dark) 100%);
+    }
+    .work-container { position: relative; z-index: 1; max-width: 1400px; margin: 0 auto; width: 100%; }
+
+    
+    .deco-star { position: absolute; pointer-events: none; will-change: transform; z-index: 1; }
+    .deco-star svg { display: block; }
+    @keyframes spin-slow { to { transform: rotate(360deg); } }
+    @keyframes spin-rev  { to { transform: rotate(-360deg); } }
+
+    
+    @keyframes planet-fade-in { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes planet-wobble {
+      0%   { transform: rotate(-15deg) scale(1); }
+      50%  { transform: rotate(15deg) scale(1.2); }
+      100% { transform: rotate(-15deg) scale(1); }
+    }
+    @keyframes p-rev { to { transform: rotateZ(1turn); } }
+
+    .personal-planet {
+      position: absolute;
+      left: 14%;
+      top: 50%;
+      transform: translate(calc(-50% - 100px), -50%) scale(0.82);
+      z-index: 0;
+      pointer-events: none;
+      overflow: visible;
+      opacity: 0;
+      transition: opacity 500ms ease-out, transform 600ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .personal-planet.planet-entered {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .personal-planet .planet-scaler {
+      width: 892px; height: 892px;
+      transform: scale(var(--personal-planet-scale, 1.4));
+      transform-origin: center center;
+    }
+    .personal-planet .planet-rotator {
+      width: 100%; height: 100%;
+      animation: planet-wobble 22s ease-in-out infinite;
+      will-change: transform;
+    }
+    .personal-planet .solar-system {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%; height: 100%;
+      transform: skewX(-45deg);
+    }
+    .personal-planet .solar-system__sun {
+      flex-shrink: 0; z-index: 100;
+      aspect-ratio: 1; width: 174.085px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(199,88,120,0.95) 20%, transparent);
+      filter: drop-shadow(0 0 22px rgba(199,88,120,0.7)) blur(1px);
+      transform: skewX(45deg);
+    }
+    .personal-planet section {
+      position: absolute; z-index: 98;
+      aspect-ratio: 1; border-radius: 50%;
+      border: 1.5px solid rgba(245,240,232,0.12);
+      will-change: transform;
+    }
+    .personal-planet .solar-system__mercury-trajectory { width: 203.085px; animation: p-rev 43.9845s  linear infinite; }
+    .personal-planet .solar-system__venus-trajectory   { width: 257.085px; animation: p-rev 112.3335s linear infinite; }
+    .personal-planet .solar-system__earth-trajectory   { width: 332.085px; animation: p-rev 182.6211s linear infinite; }
+    .personal-planet .solar-system__mars-trajectory    { width: 446.085px; animation: p-rev 343.4425s linear infinite; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .deco-star svg { animation: none !important; }
+      .personal-planet { opacity: 0.6 !important; transform: translate(-50%, -50%) scale(1) !important; transition: none !important; }
+      .personal-planet section { animation: none; }
+    }
+
+    
+    #neat-gradient {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      overflow: hidden;
+      background-color: #0D1F3C;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%);
+      mask-image: linear-gradient(to bottom, transparent 0%, black 8%);
+    }
+    #neat-gradient .neat-layer {
+      position: absolute;
+      inset: -30%;
+      background-repeat: no-repeat;
+      will-change: transform;
+    }
+    #neat-gradient .neat-layer--1 {
+      background-image:
+        radial-gradient(38% 36% at 27% 30%, rgba(31,93,74,0.80) 0%, rgba(27,77,62,0) 70%),
+        radial-gradient(42% 40% at 78% 68%, rgba(27,77,62,0.68) 0%, rgba(13,31,60,0) 72%);
+      animation: neatMove1 18s ease-in-out infinite alternate;
+    }
+    #neat-gradient .neat-layer--2 {
+      background-image:
+        radial-gradient(40% 38% at 72% 24%, rgba(20,62,52,0.68) 0%, rgba(13,31,60,0) 72%);
+      animation: neatMove2 24s ease-in-out infinite alternate;
+    }
+    #neat-gradient .neat-layer--3 {
+      background-image:
+        radial-gradient(46% 42% at 28% 78%, rgba(31,93,74,0.62) 0%, rgba(13,31,60,0) 74%),
+        radial-gradient(55% 50% at 50% 50%, rgba(27,77,62,0.50) 0%, rgba(13,31,60,0) 75%);
+      animation: neatMove3 30s ease-in-out infinite alternate;
+    }
+    @keyframes neatMove1 { from { transform: translate(-6%, -4%) scale(1.08); } to { transform: translate(8%, 6%) scale(1.22); } }
+    @keyframes neatMove2 { from { transform: translate(6%, 4%) scale(1.18); } to { transform: translate(-7%, -6%) scale(1.05); } }
+    @keyframes neatMove3 { from { transform: translate(-5%, 3%) scale(1.12); } to { transform: translate(5%, -3%) scale(1.26); } }
+    @media (prefers-reduced-motion: reduce) {
+      #neat-gradient .neat-layer { animation: none; }
+    }
+
+    
+    .personal-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      max-width: var(--reel-w);
+      margin: 0 auto;
+      padding-bottom: 36px;
+    }
+    .personal-hero-image {
+      width: 38%;
+      margin: 36px 0;
+    }
+    .personal-hero-image img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      display: block;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px rgba(245,240,232,0.06);
+    }
+
+    
+    .photo-3d-container {
+      position: relative;
+      display: block;
+      perspective: 900px;
+      perspective-origin: center center;
+      cursor: default;
+    }
+    .photo-3d-inner {
+      width: 100%;
+      transform-style: preserve-3d;
+      transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+      will-change: transform;
+      transition: transform 200ms cubic-bezier(0.16,1,0.3,1);
+      border-radius: 50%;
+      overflow: hidden;
+    }
+    .photo-3d-inner.is-manipulating { transition: none; }
+    .photo-3d-inner img {
+      width: 100%; display: block;
+      aspect-ratio: 1; object-fit: cover;
+      border-radius: 50%;
+      box-shadow: 0 0 0 1px rgba(245,240,232,0.06);
+      transition: box-shadow 200ms;
+      cursor: default !important;
+    }
+    .photo-3d-container.is-active .photo-3d-inner img {
+      box-shadow: 0 32px 80px -16px rgba(0,0,0,0.7),
+                  0 0 0 1px rgba(240,192,64,0.3);
+    }
+
+    
+    .photo-mesh {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      opacity: 0;
+      mix-blend-mode: screen;
+      transition: opacity 200ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .photo-3d-container:hover .photo-mesh,
+    .photo-3d-container.is-active .photo-mesh { opacity: 1; }
+
+    
+    .photo-gizmo {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 200ms cubic-bezier(0.16,1,0.3,1);
+      pointer-events: none;
+      overflow: visible;
+      filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+    }
+    .photo-3d-container:hover .photo-gizmo,
+    .photo-3d-container.is-active .photo-gizmo {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .photo-gizmo { cursor: default !important; }
+    .gizmo-tip { cursor: crosshair !important; }
+
+    
+    .gizmo-reset-hint {
+      position: absolute;
+      bottom: 6px; right: 8px;
+      font-size: 9px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: rgba(245,240,232,0.3);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 200ms;
+    }
+    .photo-3d-container.is-rotated .gizmo-reset-hint { opacity: 1; }
+    
+    .work-heading {
+      font-family: 'Chunko', sans-serif;
+      color: var(--gold);
+      font-size: clamp(52px, 7vw, 112px);
+      line-height: 0.9;
+    }
+    .work-desc {
+      font-size: 15px; line-height: 1.72; color: rgba(245,240,232,0.5);
+      max-width: 540px;
+      margin-top: 0;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 200ms cubic-bezier(0.16,1,0.3,1),
+                  transform 680ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .work-desc.is-visible { opacity: 1; transform: none; }
+    .work-desc strong { color: var(--cream); }
+
+    
+    @keyframes hero-in {
+      from { opacity: 0; transform: translateX(-40px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes hero-in-right {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .personal-img-wrap  { opacity: 0; animation: hero-in       200ms cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 200ms; }
+    .indie-heading-wrap { opacity: 0; animation: hero-in-right 200ms cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 200ms; }
+    .indie-desc-wrap    { opacity: 0; animation: hero-in-right 200ms cubic-bezier(0.16,1,0.3,1) forwards; animation-delay: 200ms; }
+    @media (prefers-reduced-motion:reduce) {
+      .personal-img-wrap, .indie-heading-wrap, .indie-desc-wrap { opacity: 1; animation: none; }
+      .work-desc { opacity: 1; transform: none; }
+    }
+
+    
+    .gallery-section {
+      background: var(--dark);
+      padding: 80px 32px 140px;
+      position: relative;
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 200ms cubic-bezier(0.16,1,0.3,1),
+                  transform 700ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .gallery-section.is-revealed { opacity: 1; transform: none; }
+    .gallery-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    
+    .art-series { padding: 72px 0; }
+    .art-series + .art-series { border-top: 1px solid rgba(245,240,232,0.07); }
+
+    .art-series-meta {
+      display: grid;
+      grid-template-columns: 0.7fr 1.3fr;
+      gap: 0;
+      margin-bottom: 36px;
+      align-items: start;
+    }
+    .art-series-meta-left {
+      padding-right: 40px;
+      border-right: 1px solid rgba(245,240,232,0.08);
+    }
+    .art-series-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .art-series-tag {
+      padding: 3px 11px; border-radius: 100px; border: 1px solid rgba(245,240,232,0.15);
+      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.7px;
+      color: rgba(245,240,232,0.55);
+      transition: color 200ms, border-color 200ms, background 200ms;
+      cursor: default;
+    }
+    .art-series-tag:nth-child(1):hover { color:var(--gold);   border-color:var(--gold);   background:rgba(240,192,64,0.08); }
+    .art-series-tag:nth-child(2):hover { color:var(--teal);   border-color:var(--teal);   background:rgba(56,190,181,0.08); }
+    .art-series-tag:nth-child(3):hover { color:var(--coral);  border-color:var(--coral);  background:rgba(224,107,82,0.08); }
+    .art-series-tag:nth-child(4):hover { color:var(--violet); border-color:var(--violet); background:rgba(122,82,144,0.08); }
+    .art-series-title {
+      font-family: 'Chunko', sans-serif;
+      font-size: clamp(34px, 3.2vw, 52px);
+      color: var(--cream);
+      line-height: 0.95;
+      margin-bottom: 10px;
+    }
+    .art-series-year {
+      font-size: 11.5px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+      color: var(--series-accent, var(--gold));
+    }
+    .art-series-meta-right {
+      padding-left: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .art-series-desc { font-size: 14px; line-height: 1.72; color: rgba(245,240,232,0.5); }
+    .art-series-desc strong { color: var(--cream); }
+
+    
+    .art-grid { display: grid; gap: 10px; }
+    .art-grid--6col { grid-template-columns: repeat(6, 1fr); }
+    .art-grid--3col { grid-template-columns: repeat(3, 1fr); }
+
+    .art-cell {
+      overflow: hidden;
+      position: relative;
+      aspect-ratio: 1;
+    }
+    .art-cell img, .art-cell video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    
+    .art-cell--video { aspect-ratio: 1; display: block; text-decoration: none; }
+    .art-cell--video img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .art-cell--video .play-btn {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(13,31,60,0.35);
+      transition: background 200ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .art-cell--video:hover .play-btn { background: rgba(13,31,60,0.15); }
+    .art-cell--video .play-btn svg {
+      width: 64px; height: 64px;
+      filter: drop-shadow(0 4px 16px rgba(0,0,0,0.5));
+      transition: transform 200ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .art-cell--video:hover .play-btn svg { transform: scale(1.12); }
+
+    
+    .art-series-meta-left,
+    .art-series-meta-right,
+    .art-grid {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 200ms cubic-bezier(0.16,1,0.3,1),
+                  transform 560ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .art-series.is-visible .art-series-meta-left  { opacity: 1; transform: none; transition-delay:  40ms; }
+    .art-series.is-visible .art-series-meta-right { opacity: 1; transform: none; transition-delay: 120ms; }
+    .art-series.is-visible .art-grid              { opacity: 1; transform: none; transition-delay: 200ms; }
+    @media (prefers-reduced-motion: reduce) {
+      .gallery-section { opacity: 1; transform: none; transition: none; }
+      .art-series-meta-left, .art-series-meta-right, .art-grid { opacity: 1; transform: none; transition: none; }
+    }
+
+    
+    @media (max-width: 1100px) {
+      .art-grid--6col { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-links { gap: 18px; }
+      .work { padding: 80px 22px 56px; }
+      
+      .gallery-section, .work-desc { opacity: 1 !important; transform: none !important; }
+      .art-series-meta-left, .art-series-meta-right, .art-grid { opacity: 1 !important; transform: none !important; }
+      .gallery-section { padding: 0 16px 96px; }
+      .personal-hero-image { width: 52%; }
+      .art-series-meta { grid-template-columns: 1fr; }
+      .art-series-meta-left { border-right: none; padding-right: 0; border-bottom: 1px solid rgba(245,240,232,0.08); padding-bottom: 20px; }
+      .art-series-meta-right { padding-left: 0; padding-top: 20px; }
+    }
+    @media (max-width: 560px) {
+      
+      .nav-toggle {
+        display: block;
+        position: fixed;
+        top: 18px;
+        right: 22px;
+        z-index: 300;
+      }
+      .nav-logo { position: fixed; top: 29px; left: 22px; z-index: 210; }
+      .nav-links {
+        position: fixed;
+        inset: 0;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 26px;
+        background: var(--dark);
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transform: translateY(-8px);
+        transition: opacity 300ms ease,
+                    transform 320ms cubic-bezier(0.16, 1, 0.3, 1),
+                    visibility 300ms;
+        z-index: 200;
+      }
+      body.nav-open .nav-links {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+      .nav-links li { display: block; }
+      .nav-links a { font-size: 30px; }
+      .nav-links a.nav-cta { margin-top: 10px; font-size: 18px; }
+      .nav-links li.nav-cta-item { display: none; }
+      .nav-links li.nav-social {
+        display: flex; flex-direction: row; align-items: center; margin-top: 8px;
+      }
+      .nav-links .nav-social a {
+        font-size: 16px; font-weight: 500; color: var(--cream); opacity: 0.65;
+        padding: 5px 8px; transition: opacity 200ms ease, color 120ms cubic-bezier(0.16,1,0.3,1);
+      }
+      .nav-links .nav-social a:hover { opacity: 1; color: var(--gold); }
+      .nav-social-sep { color: var(--cream); opacity: 0.25; padding: 0 4px; font-size: 18px; line-height: 1; user-select: none; pointer-events: none; }
+      .work { min-height: 85dvh; justify-content: center; }
+      .personal-hero-image { width: 72%; }
+      .art-grid--6col { grid-template-columns: repeat(2, 1fr); }
+      .art-grid--3col { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    
+    .deco-star { position: absolute; pointer-events: none; will-change: transform; z-index: 1; }
+    .deco-star svg { display: block; }
+    @keyframes spin-slow { from { transform: rotate(0deg); }   to { transform: rotate(360deg); } }
+    @keyframes spin-rev  { from { transform: rotate(0deg); }   to { transform: rotate(-360deg); } }
+    .site-footer {
+      background: var(--dark);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(64px, 9vw, 112px) clamp(32px, 7vw, 96px);
+      gap: 32px;
+    }
+    .site-footer::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right,
+        rgba(245,240,232,0.08) 0%, rgba(245,240,232,0.08) 35%,
+        var(--gold) 50%,
+        rgba(245,240,232,0.08) 65%, rgba(245,240,232,0.08) 100%);
+      background-size: 300% 100%;
+      background-position: 200% 0;
+      animation: footer-shimmer 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      pointer-events: none;
+      z-index: 1;
+    }
+    @keyframes footer-shimmer {
+      from { background-position: 200% 0; }
+      to   { background-position: -100% 0; }
+    }
+    .footer-thanks {
+      font-family: 'Chunko', sans-serif;
+      font-weight: 900;
+      color: var(--gold);
+      font-size: clamp(80px, 13vw, 220px);
+      line-height: 0.88;
+      text-align: center;
+      user-select: none;
+      margin: 0;
+    }
+    .footer-links { display: flex; flex-direction: row; align-items: center; }
+    .footer-sep {
+      color: var(--cream); opacity: 0.25;
+      padding: 0 14px; font-size: 18px; line-height: 1;
+      pointer-events: none; user-select: none;
+    }
+    .footer-links a {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px; font-weight: 500; letter-spacing: 0.1px;
+      color: var(--cream); text-decoration: none; opacity: 0.65;
+      position: relative; padding: 5px 10px;
+      transition: opacity 200ms ease, color 120ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .footer-links a:hover { opacity: 1; color: var(--gold); }
+    .footer-thanks, .footer-links {
+      position: relative; z-index: 2;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 200ms cubic-bezier(0.16,1,0.3,1), transform 200ms cubic-bezier(0.16,1,0.3,1);
+    }
+    .site-footer.is-visible .footer-thanks { opacity: 1; transform: none; transition-delay:   0ms; }
+    .site-footer.is-visible .footer-links  { opacity: 1; transform: none; transition-delay: 140ms; }
+    @media (prefers-reduced-motion: reduce) {
+      .footer-thanks, .footer-links { opacity: 1; transform: none; transition: none; }
+    }
+
+    
+    .site-footer { overflow: hidden; }
+    .footer-orbital {
+      position: absolute;
+      bottom: -10%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: clamp(600px, 100vw, 1400px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.45;
+      display: block;
+    }
+
+    html[data-skip-intro] .hero-planet,
+    html[data-skip-intro] .personal-planet {
+      opacity: 1 !important;
+      animation-duration: 0.001ms !important;
+      animation-delay: 0ms !important;
+    }
+    html[data-skip-intro] .hero-intro,
+    html[data-skip-intro] .hero-name,
+    html[data-skip-intro] .hero-surname,
+    html[data-skip-intro] .hero-aka,
+    html[data-skip-intro] .hero-desc,
+    html[data-skip-intro] .hero-ctas,
+    html[data-skip-intro] .scroll-hint,
+    html[data-skip-intro] .projects-heading-wrap,
+    html[data-skip-intro] .work-desc,
+    html[data-skip-intro] .work-reel,
+    html[data-skip-intro] .projects-section,
+    html[data-skip-intro] .gallery-section,
+    html[data-skip-intro] .project,
+    html[data-skip-intro] .art-series,
+    html[data-skip-intro] .site-footer,
+    html[data-skip-intro] .footer-thanks,
+    html[data-skip-intro] .footer-links,
+    html[data-skip-intro] .indie-heading-wrap,
+    html[data-skip-intro] .indie-desc-wrap,
+    html[data-skip-intro] .personal-img-wrap,
+    html[data-skip-intro] #personal-heading,
+    html[data-skip-intro] #indie-heading,
+    html[data-skip-intro] #work-heading,
+    html[data-skip-intro] .project-tags,
+    html[data-skip-intro] .project-title,
+    html[data-skip-intro] .project-client,
+    html[data-skip-intro] .project-desc,
+    html[data-skip-intro] .project-cta,
+    html[data-skip-intro] .project-header,
+    html[data-skip-intro] .project-visual,
+    html[data-skip-intro] .project-gallery-bottom,
+    html[data-skip-intro] .art-series-meta-left,
+    html[data-skip-intro] .art-series-meta-right,
+    html[data-skip-intro] .art-grid {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+      animation-duration: 0.001ms !important;
+      animation-delay: 0ms !important;
+    }
+    
+    html[data-skip-intro] .work-track .project {
+      opacity: 1 !important;
+      transform: none !important;
+    }
+
+    
+    #lb-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(8,10,16,0.92);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 200ms cubic-bezier(0.16,1,0.3,1);
+    }
+    #lb-overlay.is-open { opacity: 1; pointer-events: all; }
+    #lb-img,
+    #lb-video {
+      max-width: min(90vw, 1280px); max-height: 86vh;
+      border-radius: 10px;
+      box-shadow: 0 48px 120px rgba(0,0,0,0.75);
+      object-fit: contain; display: block;
+      transform: scale(0.93);
+      transition: transform 200ms cubic-bezier(0.16,1,0.3,1),
+                  opacity 240ms cubic-bezier(0.16,1,0.3,1);
+    }
+    #lb-video { background: #000; }
+    #lb-overlay.is-open #lb-img,
+    #lb-overlay.is-open #lb-video { transform: scale(1); opacity: 1; }
+    #lb-overlay.lb-switching #lb-img,
+    #lb-overlay.lb-switching #lb-video { opacity: 0; transform: scale(0.96); }
+    #lb-img[hidden], #lb-video[hidden] { display: none; }
+    #lb-close {
+      position: absolute; top: 22px; right: 26px;
+      background: rgba(245,240,232,0.08); border: 1px solid rgba(245,240,232,0.12);
+      border-radius: 50%; width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--cream); transition: background 150ms, opacity 150ms;
+      opacity: 0.75; z-index: 1;
+    }
+    #lb-close:hover { opacity: 1; background: rgba(245,240,232,0.14); }
+    #lb-close svg { pointer-events: none; }
+    #lb-prev, #lb-next {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(245,240,232,0.07); border: 1px solid rgba(245,240,232,0.12);
+      border-radius: 50%; width: 48px; height: 48px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--cream); opacity: 0.7;
+      transition: background 150ms, opacity 200ms; z-index: 1;
+    }
+    #lb-prev:hover, #lb-next:hover { background: rgba(245,240,232,0.14); opacity: 1; }
+    #lb-prev { left: 20px; }
+    #lb-next { right: 20px; }
+    #lb-prev[hidden], #lb-next[hidden] { opacity: 0; pointer-events: none; }
+    #lb-counter {
+      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+      font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+      color: rgba(245,240,232,0.55); pointer-events: none; z-index: 1;
+    }
+    .lb-trigger { cursor: zoom-in !important; }
+    
+    @media (max-width: 560px) {
+      .deco-star svg { zoom: 0.5; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <div id="cursor-blob" aria-hidden="true"></div>
+  <div id="cursor-halo" aria-hidden="true"></div>
+  <div id="cursor-planet" aria-hidden="true">
+    <svg viewBox="0 0 564.03 828.12" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="rkt-body" x1="214.69" y1="375.11" x2="117.26" y2="67.178" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#38BEB5"/>
+          <stop offset="1" stop-color="#F5F0E8"/>
+        </linearGradient>
+      </defs>
+      <g transform="translate(-91.969 -111.81)">
+        <g transform="matrix(.84875 0 0 .84875 58.209 79.279)">
+          <path d="m168.37 517.54-72.434 108.12 51.744 197.15 89.21-151.66z" fill="#E06B52"/>
+          <path d="m437.62 447.35 117.76 40.145 92.78 197.16-178.42-89.212z" fill="#C75878"/>
+          <path d="m304.55 682.26 112.58-40.663 85.845 125.38-196.92 66.266z" fill="#F0C040"/>
+          <path fill="url(#rkt-body)" d="m117.62 67.562c-78.182 281.68 42.1 502.19 42.1 502.19l231.56-81.19c-59.14-263.63-273.66-421-273.66-421zm66.66 145.35c27.4 0 49.63 22.22 49.63 49.62s-22.23 49.63-49.63 49.63-49.62-22.23-49.62-49.63 22.22-49.62 49.62-49.62z" transform="matrix(1.1782 0 0 1.1782 39.775 38.331)"/>
+          <circle cx="263" cy="325" r="41" fill="#0D1F3C"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  
+  <nav>
+    <a href="../" class="nav-logo">Alberto.studio</a>
+    <ul class="nav-links" id="primary-nav">
+      <li><a href="../#work">Work</a></li>
+      <li><a href="../indie/">Indie</a></li>
+      <li><a href="../personal/">Personal</a></li>
+      <li class="nav-cta-item"><a href="mailto:hi@alberto.studio" class="nav-cta">Get in touch ↗</a></li>
+      <li class="nav-social">
+        <a href="https://www.instagram.com/alberto.orbital/" target="_blank" rel="noopener noreferrer">instagram</a>
+        <span class="nav-social-sep" aria-hidden="true">·</span>
+        <a href="https://www.linkedin.com/in/artbertorg/" target="_blank" rel="noopener noreferrer">linkedin</a>
+        <span class="nav-social-sep" aria-hidden="true">·</span>
+        <a href="mailto:hi@alberto.studio">contact me</a>
+      </li>
+    </ul>
+    <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="primary-nav">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  
+  <section class="work">
+
+    
+    <div class="personal-planet" aria-hidden="true">
+      <div class="planet-scaler">
+        <div class="planet-rotator">
+          <main class="solar-system">
+            <article class="solar-system__sun"></article>
+            <section class="solar-system__mercury-trajectory"></section>
+            <section class="solar-system__venus-trajectory"></section>
+            <section class="solar-system__earth-trajectory"></section>
+            <section class="solar-system__mars-trajectory"></section>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="deco-star" style="top:8%;left:5%;"   data-speed="0.45"  aria-hidden="true"><svg width="52" height="52" viewBox="0 0 24 24" style="animation:spin-slow 9s linear infinite;"><path d="M12 1 L14 9 L22 12 L14 15 L12 23 L10 15 L2 12 L10 9 Z" fill="#F0C040"/></svg></div>
+    <div class="deco-star" style="top:12%;right:6%;"  data-speed="-0.25" aria-hidden="true"><svg width="32" height="32" viewBox="0 0 24 24" style="animation:spin-rev 14s linear infinite;"><path d="M12 1 L14 9 L22 12 L14 15 L12 23 L10 15 L2 12 L10 9 Z" fill="#F5F0E8"/></svg></div>
+    <div class="deco-star" style="top:18%;left:22%;"  data-speed="0.6"   aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" style="animation:spin-slow 12s linear infinite;"><path d="M12 1 L14 9 L22 12 L14 15 L12 23 L10 15 L2 12 L10 9 Z" fill="#C75878" opacity="0.8"/></svg></div>
+    <div class="deco-star" style="top:33%;left:8%;"   data-speed="-0.38" aria-hidden="true"><svg width="40" height="40" viewBox="0 0 24 24" style="animation:spin-rev 11s linear infinite;"><path d="M12 1 L14 9 L22 12 L14 15 L12 23 L10 15 L2 12 L10 9 Z" fill="#7A5290" opacity="0.85"/></svg></div>
+    <div class="deco-star" style="top:22%;right:24%;"  data-speed="0.2"  aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" style="animation:spin-rev 20s linear infinite;"><path d="M12 1 L14 9 L22 12 L14 15 L12 23 L10 15 L2 12 L10 9 Z" fill="#38BEB5" opacity="0.7"/></svg></div>
+    <div class="deco-star" style="top:55%;right:8%;"   data-speed="0.5"  aria-hidden="true"><svg width="36" height="36" viewBox="0 0 24 24" style="animation:spin-slow 7s linear infinite;"><path d="M12 1 L14 9 L22 12 L14 15 L12 23 L10 15 L2 12 L10 9 Z" fill="#38BEB5"/></svg></div>
+    <div class="deco-star" style="top:70%;left:5%;"   data-speed="-0.18" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" style="animation:spin-rev 16s linear infinite;"><path d="M12 1 L14 9 L22 12 L14 15 L12 23 L10 15 L2 12 L10 9 Z" fill="#F5F0E8" opacity="0.65"/></svg></div>
+    <div class="deco-star" style="top:85%;right:15%;"  data-speed="0.4"  aria-hidden="true"><svg width="44" height="44" viewBox="0 0 24 24" style="animation:spin-slow 10s linear infinite;"><path d="M12 1 L14 9 L22 12 L14 15 L12 23 L10 15 L2 12 L10 9 Z" fill="#F0C040" opacity="0.75"/></svg></div>
+    <div class="work-container">
+      <div class="personal-hero">
+
+        <div class="indie-heading-wrap">
+          <h1 class="work-heading" id="personal-heading">Hi, I'm Alberto!</h1>
+        </div>
+
+        <div class="personal-hero-image">
+          <div class="personal-img-wrap">
+            <img src="../assets/images/alberto_perfil.jpeg" alt="Alberto Rodríguez">
+          </div>
+        </div>
+
+        <div class="indie-desc-wrap">
+          <p class="work-desc" id="personal-desc">After exploring my mobile and indie dev work, I invite you to look at my most personal art. This is the core of everything I create and live for.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  
+  <section class="gallery-section">
+    <div id="neat-gradient" aria-hidden="true"><div class="neat-layer neat-layer--1"></div><div class="neat-layer neat-layer--2"></div><div class="neat-layer neat-layer--3"></div></div>
+    <div class="gallery-inner">
+
+      
+      <article class="art-series" style="--series-accent: var(--rose);">
+        <div class="art-series-meta">
+          <div class="art-series-meta-left">
+            <div class="art-series-tags">
+              <span class="art-series-tag">Short Film</span>
+              <span class="art-series-tag">Character Design</span>
+              <span class="art-series-tag">Rigging</span>
+            </div>
+            <h2 class="art-series-title">Aazar</h2>
+            <p class="art-series-year">Short Film Development</p>
+          </div>
+          <div class="art-series-meta-right">
+            <p class="art-series-desc">Character development and <strong>animation rigging</strong> for a personal short film project. Aazar is a figure I've been building slowly — a being made of light and memory. This work documents the design, rig structure, and early motion tests that will form the backbone of the film.</p>
+          </div>
+        </div>
+        <div class="art-grid art-grid--3col">
+          <a class="art-cell art-cell--video" href="https://www.youtube.com/watch?v=VaS8ptLsk90" target="_blank" rel="noopener noreferrer">
+            <img src="https://img.youtube.com/vi/VaS8ptLsk90/maxresdefault.jpg" alt="Aazar — Short film">
+            <div class="play-btn">
+              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="32" cy="32" r="32" fill="rgba(245,240,232,0.15)"/>
+                <circle cx="32" cy="32" r="30" stroke="rgba(245,240,232,0.6)" stroke-width="1.5"/>
+                <polygon points="26,20 48,32 26,44" fill="#F5F0E8"/>
+              </svg>
+            </div>
+          </a>
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/AazarShortfilm/Aazar_Loop.mp4" type="video/mp4"></video></div>
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/AazarShortfilm/AazarRig.mp4" type="video/mp4"></video></div>
+        </div>
+      </article>
+
+      
+      <article class="art-series" style="--series-accent: var(--violet);">
+        <div class="art-series-meta">
+          <div class="art-series-meta-left">
+            <div class="art-series-tags">
+              <span class="art-series-tag">Personal Art</span>
+              <span class="art-series-tag">Portrait Series</span>
+              <span class="art-series-tag">2D Animation</span>
+            </div>
+            <h2 class="art-series-title">Moons</h2>
+            <p class="art-series-year">Portrait Series</p>
+          </div>
+          <div class="art-series-meta-right">
+            <p class="art-series-desc">An intimate portrait series dedicated to the people who orbit my life. Each piece represents someone close to me — <strong>family, love, presence</strong> — rendered as a celestial body: quiet, luminous, and essential. The moon doesn't shine on its own. Neither do I.</p>
+          </div>
+        </div>
+        <div class="art-grid art-grid--6col">
+          <div class="art-cell"><img src="../assets/content/concept_art/Moons/Moons_Me.webp"       alt="Moons — Me"></div>
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/Moons/Moons_mama.mp4" type="video/mp4"></video></div>
+          <div class="art-cell"><img src="../assets/content/concept_art/Moons/Moons_papa.webp"     alt="Moons — Papá"></div>
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/Moons/Moon_Anna.mp4" type="video/mp4"></video></div>
+          <div class="art-cell"><img src="../assets/content/concept_art/Moons/Moons_Natali.webp"   alt="Moons — Natali"></div>
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/Moons/Moons_Abuelita.mp4" type="video/mp4"></video></div>
+        </div>
+      </article>
+
+      
+      <article class="art-series" style="--series-accent: var(--coral);">
+        <div class="art-series-meta">
+          <div class="art-series-meta-left">
+            <div class="art-series-tags">
+              <span class="art-series-tag">Personal Art</span>
+              <span class="art-series-tag">Abstract</span>
+              <span class="art-series-tag">Loop Animation</span>
+            </div>
+            <h2 class="art-series-title">Laberynth</h2>
+            <p class="art-series-year">Six-Part Series</p>
+          </div>
+          <div class="art-series-meta-right">
+            <p class="art-series-desc">A six-part abstract animation series exploring <strong>structure, repetition, and the feeling of being lost inside a system</strong>. Each chapter layers geometric motion and tension until the pattern becomes the emotion. A labyrinth you can't touch but you recognise.</p>
+          </div>
+        </div>
+        <div class="art-grid art-grid--3col">
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/Laberynth/Laberynth_I.mp4" type="video/mp4"></video></div>
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/Laberynth/Laberynth_II.mp4" type="video/mp4"></video></div>
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/Laberynth/Laberynth_III_Low.mp4" type="video/mp4"></video></div>
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/Laberynth/Laberynth_IV.mp4" type="video/mp4"></video></div>
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/Laberynth/Laberynth_V.mp4" type="video/mp4"></video></div>
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/Laberynth/Laberynth_VI_Low.mp4" type="video/mp4"></video></div>
+        </div>
+      </article>
+
+      
+      <article class="art-series" style="--series-accent: var(--teal);">
+        <div class="art-series-meta">
+          <div class="art-series-meta-left">
+            <div class="art-series-tags">
+              <span class="art-series-tag">Personal Art</span>
+              <span class="art-series-tag">Loop Animation</span>
+              <span class="art-series-tag">Concept</span>
+            </div>
+            <h2 class="art-series-title">Loops</h2>
+            <p class="art-series-year">Animated Explorations</p>
+          </div>
+          <div class="art-series-meta-right">
+            <p class="art-series-desc">A collection of personal animated loops born from <strong>emotions, states of mind, and interior worlds</strong>. Each one is a small meditation — a feeling made visible and set in motion. Introspective work that lives in the space between image and music.</p>
+          </div>
+        </div>
+        <div class="art-grid art-grid--3col">
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/Loops/Dreams.mp4" type="video/mp4"></video></div>
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/Loops/Flowers&Galaxies.mp4" type="video/mp4"></video></div>
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/Loops/SkyAndStorm.mp4" type="video/mp4"></video></div>
+
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/Loops/AworldInsideAWorld.mp4" type="video/mp4"></video></div>
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/Loops/SoyPorqueTuEres.mp4" type="video/mp4"></video></div>
+          <div class="art-cell"><video autoplay preload="none" loop muted playsinline><source src="../assets/content/concept_art/Loops/UnHueco.mp4" type="video/mp4"></video></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  
+  <footer class="site-footer">
+    <img class="footer-orbital" src="../assets/orbital_footer.svg" alt="" aria-hidden="true">
+
+    <div class="deco-star" style="top:10%;left:5%;"   data-speed="0.45"  aria-hidden="true"><svg width="52" height="52" viewBox="0 0 24 24" style="animation:spin-slow 9s linear infinite;"><path d="M12 1 L14 9 L22 12 L14 15 L12 23 L10 15 L2 12 L10 9 Z" fill="#F0C040"/></svg></div>
+    <div class="deco-star" style="top:14%;right:6%;"  data-speed="-0.25" aria-hidden="true"><svg width="32" height="32" viewBox="0 0 24 24" style="animation:spin-rev 14s linear infinite;"><path d="M12 1 L14 9 L22 12 L14 15 L12 23 L10 15 L2 12 L10 9 Z" fill="#38BEB5"/></svg></div>
+    <div class="deco-star" style="top:25%;left:20%;"  data-speed="0.6"   aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" style="animation:spin-slow 12s linear infinite;"><path d="M12 1 L14 9 L22 12 L14 15 L12 23 L10 15 L2 12 L10 9 Z" fill="#C75878" opacity="0.8"/></svg></div>
+    <div class="deco-star" style="top:28%;right:22%;" data-speed="0.2"   aria-hidden="true"><svg width="40" height="40" viewBox="0 0 24 24" style="animation:spin-rev 11s linear infinite;"><path d="M12 1 L14 9 L22 12 L14 15 L12 23 L10 15 L2 12 L10 9 Z" fill="#7A5290" opacity="0.85"/></svg></div>
+    <div class="deco-star" style="top:55%;left:8%;"   data-speed="-0.38" aria-hidden="true"><svg width="36" height="36" viewBox="0 0 24 24" style="animation:spin-slow 7s linear infinite;"><path d="M12 1 L14 9 L22 12 L14 15 L12 23 L10 15 L2 12 L10 9 Z" fill="#E06B52"/></svg></div>
+    <div class="deco-star" style="top:48%;right:9%;"  data-speed="0.5"   aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" style="animation:spin-rev 16s linear infinite;"><path d="M12 1 L14 9 L22 12 L14 15 L12 23 L10 15 L2 12 L10 9 Z" fill="#F0C040" opacity="0.75"/></svg></div>
+    <div class="deco-star" style="top:72%;left:14%;"  data-speed="-0.18" aria-hidden="true"><svg width="44" height="44" viewBox="0 0 24 24" style="animation:spin-slow 10s linear infinite;"><path d="M12 1 L14 9 L22 12 L14 15 L12 23 L10 15 L2 12 L10 9 Z" fill="#38BEB5" opacity="0.8"/></svg></div>
+    <div class="deco-star" style="top:76%;right:36%;" data-speed="0.4"   aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" style="animation:spin-rev 8s linear infinite;"><path d="M12 1 L14 9 L22 12 L14 15 L12 23 L10 15 L2 12 L10 9 Z" fill="#C75878" opacity="0.75"/></svg></div>
+    <p class="footer-thanks" aria-hidden="true">Thanks!</p>
+    <div class="footer-links" role="navigation" aria-label="Social links">
+      <a href="https://www.instagram.com/alberto.orbital/" target="_blank" rel="noopener noreferrer">instagram</a>
+      <span class="footer-sep" aria-hidden="true">·</span>
+      <a href="https://www.linkedin.com/in/artbertorg/" target="_blank" rel="noopener noreferrer">linkedin</a>
+      <span class="footer-sep" aria-hidden="true">·</span>
+      <a href="mailto:hi@alberto.studio">contact me</a>
+    </div>
+  </footer>
+
+  <script>
+    (function initRocketCursor() {
+      if (window.matchMedia('(pointer: coarse)').matches) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var planet = document.getElementById('cursor-planet');
+      var halo   = document.getElementById('cursor-halo');
+      var sparkleColors = ['#F0C040', '#F5F0E8', '#38BEB5', '#E06B52'];
+      var lastX = 0, lastY = 0, currentAngle = -90;
+
+      function spawnSparkle(x, y) {
+        var dx = x - lastX, dy = y - lastY;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 10) return;
+        lastX = x; lastY = y;
+        var count = Math.min(3, Math.floor(dist / 10));
+        for (var i = 0; i < count; i++) {
+          var s = document.createElement('div');
+          s.className = 'cursor-sparkle';
+          var size = 3 + Math.random() * 5;
+          var offsetX = (Math.random() - 0.5) * 22;
+          var offsetY = (Math.random() - 0.5) * 22;
+          var color = sparkleColors[Math.floor(Math.random() * sparkleColors.length)];
+          var delay = i * 40;
+          s.style.cssText = 'left:' + (x + offsetX) + 'px;top:' + (y + offsetY) + 'px;width:' + size + 'px;height:' + size + 'px;background:' + color + ';animation-delay:' + delay + 'ms;';
+          document.body.appendChild(s);
+          setTimeout(function(el) { el.parentNode && el.parentNode.removeChild(el); }, 700 + delay, s);
+        }
+      }
+
+      document.addEventListener('mousemove', function(e) {
+        var dx = e.clientX - lastX, dy = e.clientY - lastY;
+        if (Math.sqrt(dx*dx + dy*dy) > 2) {
+          var targetAngle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+          var diff = targetAngle - currentAngle;
+          while (diff > 180) diff -= 360;
+          while (diff < -180) diff += 360;
+          currentAngle += diff * 0.25;
+        }
+        planet.style.left = e.clientX + 'px';
+        planet.style.top  = e.clientY + 'px';
+        planet.style.transform = 'translate(-50%, -50%) rotate(' + currentAngle + 'deg)';
+        planet.classList.add('is-visible');
+        halo.style.left = e.clientX + 'px';
+        halo.style.top  = e.clientY + 'px';
+        spawnSparkle(e.clientX, e.clientY);
+      }, { passive: true });
+
+      document.addEventListener('mouseleave', function() {
+        planet.classList.remove('is-visible');
+        halo.classList.remove('is-visible');
+      });
+
+      document.querySelectorAll('a, button').forEach(function(el) {
+        el.addEventListener('mouseenter', function() { planet.classList.add('is-hovering'); halo.classList.add('is-visible'); });
+        el.addEventListener('mouseleave', function() { planet.classList.remove('is-hovering'); halo.classList.remove('is-visible'); });
+      });
+    })();
+
+    (function() {
+      var nav = document.querySelector('nav');
+      if (!nav) return;
+      function check() { nav.classList.toggle('is-scrolled', window.scrollY > 40); }
+      window.addEventListener('scroll', check, { passive: true });
+      check();
+    })();
+
+    (function initScrambleHeading() {
+      var el      = document.getElementById('personal-heading');
+      var desc    = document.getElementById('personal-desc');
+      var section = document.querySelector('.gallery-section');
+      if (!el) return;
+      var original = el.textContent;
+      var chars    = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789·—';
+      var timer    = null;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        el.style.opacity = '1';
+        el.textContent = original;
+        if (desc)    desc.classList.add('is-visible');
+        if (section) section.classList.add('is-revealed');
+        var planet = document.querySelector('.personal-planet');
+        if (planet) planet.classList.add('planet-entered');
+        initSeriesReveal();
+        return;
+      }
+
+      el.style.opacity = '0';
+
+      function revealAll() {
+        if (section) section.classList.add('is-revealed');
+        var planet = document.querySelector('.personal-planet');
+        if (planet) requestAnimationFrame(function() { planet.classList.add('planet-entered'); });
+        initSeriesReveal();
+      }
+
+      function scramble() {
+        el.style.opacity = '1';
+        clearInterval(timer);
+        var iter = 0, maxIter = original.length * 3;
+        var msPerTick = Math.max(1, Math.floor(500 / maxIter));
+        timer = setInterval(function() {
+          el.textContent = original.split('').map(function(c, i) {
+            if (c === ' ') return ' ';
+            if (i < Math.floor(iter / 3)) return original[i];
+            return chars[Math.floor(Math.random() * chars.length)];
+          }).join('');
+          iter++;
+          if (iter > maxIter) {
+            el.textContent = original;
+            clearInterval(timer);
+            if (desc) {
+              desc.classList.add('is-visible');
+              desc.addEventListener('transitionend', function handler(e) {
+                if (e.propertyName !== 'opacity') return;
+                desc.removeEventListener('transitionend', handler);
+                revealAll();
+              });
+            } else {
+              revealAll();
+            }
+          }
+        }, msPerTick);
+      }
+
+      var ran = false;
+      var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !ran) {
+            ran = true;
+            scramble();
+          }
+        });
+      }, { threshold: 0.3 });
+      obs.observe(el);
+    })();
+
+    function initSeriesReveal() {
+      var series = document.querySelectorAll('.art-series');
+      if (!series.length || !window.IntersectionObserver) {
+        series.forEach(function(s) { s.classList.add('is-visible'); });
+        return;
+      }
+      var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          obs.unobserve(entry.target);
+        });
+      }, { threshold: 0.07 });
+      series.forEach(function(s) { obs.observe(s); });
+    }
+
+    (function initNavToggle() {
+      var toggle = document.querySelector('.nav-toggle');
+      var links = document.querySelector('.nav-links');
+      if (!toggle || !links) return;
+      function setOpen(open) {
+        document.body.classList.toggle('nav-open', open);
+        toggle.classList.toggle('is-open', open);
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        toggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+      }
+      toggle.addEventListener('click', function() {
+        setOpen(!document.body.classList.contains('nav-open'));
+      });
+      links.querySelectorAll('a').forEach(function(a) {
+        a.addEventListener('click', function() { setOpen(false); });
+      });
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') setOpen(false);
+      });
+      window.addEventListener('resize', function() {
+        if (window.innerWidth > 560) setOpen(false);
+      });
+    })();
+
+    (function() {
+      var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      document.querySelectorAll('.nav-links a:not(.nav-cta)').forEach(function(link) {
+        var ns = 'http://www.w3.org/2000/svg';
+        var svg = document.createElementNS(ns, 'svg');
+        svg.classList.add('nav-stroke-svg');
+        var rect = document.createElementNS(ns, 'rect');
+        rect.classList.add('nav-stroke-rect');
+        svg.appendChild(rect);
+        link.appendChild(svg);
+        function getPerimeter(w, h, r) { r = Math.min(r, w/2, h/2); return 2*(w-2*r)+2*(h-2*r)+2*Math.PI*r; }
+        function setup() {
+          var w = link.offsetWidth, h = link.offsetHeight, r = h/2;
+          rect.setAttribute('x','1'); rect.setAttribute('y','1');
+          rect.setAttribute('width',w-2); rect.setAttribute('height',h-2); rect.setAttribute('rx',r);
+          var p = getPerimeter(w-2,h-2,r);
+          rect.style.strokeDasharray = p; rect.style.strokeDashoffset = p; rect.style.transition = 'none';
+        }
+        link.addEventListener('mouseenter', function() {
+          setup();
+          if (prefersReduced) { rect.style.strokeDashoffset = '0'; return; }
+          requestAnimationFrame(function() { rect.style.transition = 'stroke-dashoffset 420ms cubic-bezier(0.16,1,0.3,1)'; rect.style.strokeDashoffset = '0'; });
+        });
+        link.addEventListener('mouseleave', function() {
+          var p = rect.style.strokeDasharray;
+          if (prefersReduced) { rect.style.strokeDashoffset = p; return; }
+          rect.style.transition = 'stroke-dashoffset 280ms cubic-bezier(0.4,0,1,1)'; rect.style.strokeDashoffset = p;
+        });
+      });
+    })();
+
+    (function() {
+      function computePlanetScale() {
+        var raw = 3.0 * Math.min(window.innerWidth, window.innerHeight) / 892;
+        return Math.max(0.825, Math.min(2.025, raw)).toFixed(4);
+      }
+      function set() { document.documentElement.style.setProperty('--personal-planet-scale', computePlanetScale()); }
+      set();
+      window.addEventListener('resize', set);
+    })();
+
+    (function initGizmo() {
+      if (window.matchMedia('(pointer: coarse)').matches) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      var imgEl = document.querySelector('.personal-hero-image img');
+      if (!imgEl) return;
+
+      var container = document.createElement('div');
+      container.className = 'photo-3d-container';
+      var inner = document.createElement('div');
+      inner.className = 'photo-3d-inner';
+      imgEl.parentNode.insertBefore(container, imgEl);
+      inner.appendChild(imgEl);
+      container.appendChild(inner);
+
+      var NS2 = 'http://www.w3.org/2000/svg';
+      var mesh = document.createElementNS(NS2, 'svg');
+      mesh.setAttribute('class', 'photo-mesh');
+      mesh.setAttribute('viewBox', '0 0 100 100');
+      mesh.setAttribute('preserveAspectRatio', 'none');
+      var div = 8;
+      for (var i = 0; i <= div; i++) {
+        var t = (i / div) * 100;
+        var vl = document.createElementNS(NS2, 'line');
+        vl.setAttribute('x1', t); vl.setAttribute('y1', 0);
+        vl.setAttribute('x2', t); vl.setAttribute('y2', 100);
+        vl.setAttribute('stroke', 'rgba(100,220,180,0.55)');
+        vl.setAttribute('stroke-width', '1');
+        vl.setAttribute('vector-effect', 'non-scaling-stroke');
+        mesh.appendChild(vl);
+        var hl = document.createElementNS(NS2, 'line');
+        hl.setAttribute('x1', 0); hl.setAttribute('y1', t);
+        hl.setAttribute('x2', 100); hl.setAttribute('y2', t);
+        hl.setAttribute('stroke', 'rgba(100,220,180,0.55)');
+        hl.setAttribute('stroke-width', '1');
+        hl.setAttribute('vector-effect', 'non-scaling-stroke');
+        mesh.appendChild(hl);
+      }
+      inner.appendChild(mesh);
+
+      var rotX = 0, rotY = 0, rotZ = 0;
+
+      function applyTransform(animated) {
+        inner.style.transition = animated
+          ? 'transform 700ms cubic-bezier(0.16,1,0.3,1)'
+          : 'none';
+        inner.style.transform =
+          'rotateX(' + rotX + 'deg) rotateY(' + rotY + 'deg) rotateZ(' + rotZ + 'deg)';
+        var isDefault = Math.abs(rotX) < 0.5 && Math.abs(rotY) < 0.5 && Math.abs(rotZ) < 0.5;
+        container.classList.toggle('is-rotated', !isDefault);
+      }
+
+      var cursorPlanet = document.getElementById('cursor-planet');
+      var cursorBlob   = document.getElementById('cursor-blob');
+      var cursorHalo   = document.getElementById('cursor-halo');
+      container.addEventListener('mouseenter', function() {
+        if (cursorPlanet) cursorPlanet.style.opacity = '0';
+        if (cursorBlob)   cursorBlob.style.opacity   = '0';
+        if (cursorHalo)   cursorHalo.style.opacity    = '0';
+      });
+      container.addEventListener('mouseleave', function() {
+        if (cursorPlanet) cursorPlanet.style.opacity = '';
+        if (cursorBlob)   cursorBlob.style.opacity   = '';
+        if (cursorHalo)   cursorHalo.style.opacity    = '';
+      });
+
+      container.addEventListener('dblclick', function() {
+        rotX = 0; rotY = 0; rotZ = 0;
+        applyTransform(true);
+      });
+
+      var NS  = 'http://www.w3.org/2000/svg';
+      var SZ  = 96;
+      var CX  = SZ / 2, CY = SZ / 2;
+      var LEN = 30;
+
+      var svg = document.createElementNS(NS, 'svg');
+      svg.setAttribute('class', 'photo-gizmo');
+      svg.setAttribute('width',   SZ);
+      svg.setAttribute('height',  SZ);
+      svg.setAttribute('viewBox', '0 0 ' + SZ + ' ' + SZ);
+
+      var axes = [
+        { angle:   0, color: '#FF4D4D', label: 'X', rot: 'Y', sensitivity:  0.45 },
+        { angle:  90, color: '#4DCC55', label: 'Y', rot: 'X', sensitivity: -0.45 },
+        { angle: 218, color: '#5599FF', label: 'Z', rot: 'Z', sensitivity:  0.35 },
+      ];
+
+      var dotBg = document.createElementNS(NS, 'circle');
+      dotBg.setAttribute('cx', CX); dotBg.setAttribute('cy', CY);
+      dotBg.setAttribute('r', 5);
+      dotBg.setAttribute('fill', 'rgba(13,31,60,0.7)');
+      svg.appendChild(dotBg);
+
+      var dot = document.createElementNS(NS, 'circle');
+      dot.setAttribute('cx', CX); dot.setAttribute('cy', CY);
+      dot.setAttribute('r', 3);
+      dot.setAttribute('fill', '#F5F0E8');
+      svg.appendChild(dot);
+
+      axes.forEach(function(axis) {
+        var rad = (axis.angle * Math.PI) / 180;
+        var ex  = CX + Math.cos(rad) * LEN;
+        var ey  = CY - Math.sin(rad) * LEN;
+        var lx  = CX + Math.cos(rad) * (LEN + 13);
+        var ly  = CY - Math.sin(rad) * (LEN + 13) + 3.5;
+
+        var line = document.createElementNS(NS, 'line');
+        line.setAttribute('x1', CX); line.setAttribute('y1', CY);
+        line.setAttribute('x2', ex); line.setAttribute('y2', ey);
+        line.setAttribute('stroke', axis.color);
+        line.setAttribute('stroke-width', '2');
+        line.setAttribute('stroke-linecap', 'round');
+        svg.appendChild(line);
+
+        var tipBg = document.createElementNS(NS, 'circle');
+        tipBg.setAttribute('cx', ex); tipBg.setAttribute('cy', ey);
+        tipBg.setAttribute('r', 9);
+        tipBg.setAttribute('fill', 'rgba(13,31,60,0.5)');
+        tipBg.setAttribute('class', 'gizmo-tip');
+        svg.appendChild(tipBg);
+
+        var tip = document.createElementNS(NS, 'circle');
+        tip.setAttribute('cx', ex); tip.setAttribute('cy', ey);
+        tip.setAttribute('r', 5.5);
+        tip.setAttribute('fill', axis.color);
+        tip.setAttribute('class', 'gizmo-tip');
+        svg.appendChild(tip);
+
+        var lbl = document.createElementNS(NS, 'text');
+        lbl.setAttribute('x', lx); lbl.setAttribute('y', ly);
+        lbl.setAttribute('fill', axis.color);
+        lbl.setAttribute('font-size', '9');
+        lbl.setAttribute('font-weight', '700');
+        lbl.setAttribute('font-family', 'DM Sans, sans-serif');
+        lbl.setAttribute('text-anchor', 'middle');
+        lbl.setAttribute('pointer-events', 'none');
+        lbl.textContent = axis.label;
+        svg.appendChild(lbl);
+
+        var dragging = false, sx = 0, sy = 0, sRot = 0;
+
+        function onDown(e) {
+          e.preventDefault(); e.stopPropagation();
+          dragging = true;
+          sx = e.clientX; sy = e.clientY;
+          sRot = axis.rot === 'X' ? rotX : axis.rot === 'Y' ? rotY : rotZ;
+          inner.classList.add('is-manipulating');
+          container.classList.add('is-active');
+          tip.setAttribute('r', '7'); tipBg.setAttribute('r', '11');
+          document.addEventListener('mousemove', onMove);
+          document.addEventListener('mouseup',   onUp);
+        }
+
+        function onMove(e) {
+          if (!dragging) return;
+          var dx    = e.clientX - sx;
+          var dy    = e.clientY - sy;
+          var delta = (Math.abs(dx) > Math.abs(dy) ? dx : -dy) * axis.sensitivity;
+          var val   = sRot + delta;
+          if (axis.rot === 'X') rotX = val;
+          else if (axis.rot === 'Y') rotY = val;
+          else rotZ = val;
+          applyTransform(false);
+        }
+
+        function onUp() {
+          dragging = false;
+          inner.classList.remove('is-manipulating');
+          container.classList.remove('is-active');
+          tip.setAttribute('r', '5.5'); tipBg.setAttribute('r', '9');
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup',   onUp);
+        }
+
+        tipBg.addEventListener('mousedown', onDown, { passive: false });
+        tip.addEventListener(  'mousedown', onDown, { passive: false });
+      });
+
+      var hint = document.createElement('div');
+      hint.className = 'gizmo-reset-hint';
+      hint.textContent = 'dbl-click reset';
+      container.appendChild(hint);
+
+      container.appendChild(svg);
+    })();
+
+    (function() {
+      var footer = document.querySelector('.site-footer');
+      if (!footer || !window.IntersectionObserver) { if (footer) footer.classList.add('is-visible'); return; }
+      var obs = new IntersectionObserver(function(entries) {
+        if (entries[0].isIntersecting) { footer.classList.add('is-visible'); obs.disconnect(); }
+      }, { threshold: 0.05 });
+      obs.observe(footer);
+    })();
+  </script>
+  <script>
+  (function initLightbox() {
+    var overlay = document.createElement('div');
+    overlay.id = 'lb-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'Lightbox');
+    overlay.innerHTML =
+      '<button id="lb-close" aria-label="Close"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><line x1="2" y1="2" x2="16" y2="16" stroke="#F5F0E8" stroke-width="2" stroke-linecap="round"/><line x1="16" y1="2" x2="2" y2="16" stroke="#F5F0E8" stroke-width="2" stroke-linecap="round"/></svg></button>' +
+      '<button id="lb-prev" aria-label="Previous"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><polyline points="11,3 5,9 11,15" stroke="#F5F0E8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+      '<img id="lb-img" src="" alt="">' +
+      '<video id="lb-video" autoplay loop muted playsinline hidden></video>' +
+      '<button id="lb-next" aria-label="Next"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><polyline points="7,3 13,9 7,15" stroke="#F5F0E8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+      '<div id="lb-counter"></div>';
+    document.body.appendChild(overlay);
+
+    var lbImg     = document.getElementById('lb-img');
+    var lbVideo   = document.getElementById('lb-video');
+    var lbPrev    = document.getElementById('lb-prev');
+    var lbNext    = document.getElementById('lb-next');
+    var lbCounter = document.getElementById('lb-counter');
+    var items        = [];
+    var currentGroup = [];
+    var groupIdx     = 0;
+
+    function collectItems() {
+      items = [];
+
+      var allSeries = Array.prototype.slice.call(document.querySelectorAll('article.art-series'));
+      function groupOf(el) {
+        var article = el.closest('article.art-series');
+        return article ? allSeries.indexOf(article) : -1;
+      }
+
+      document.querySelectorAll('.art-cell img').forEach(function(img) {
+        if (img.closest('.art-cell--video')) return;
+        if (img.classList.contains('footer-orbital')) return;
+        if (items.find(function(i){ return i.src === img.src; })) return;
+        var idx = items.length;
+        items.push({ el: img, src: img.src, alt: img.alt || '', type: 'image', group: groupOf(img) });
+        img.classList.add('lb-trigger');
+        img.addEventListener('click', function() { open(idx); });
+      });
+
+      document.querySelectorAll('.art-cell video').forEach(function(vid) {
+        var source = vid.querySelector('source');
+        if (!source) return;
+        var src = source.getAttribute('src') || source.src;
+        if (items.find(function(i){ return i.src === src; })) return;
+        var idx = items.length;
+        items.push({ el: vid, src: src, alt: '', type: 'video', group: groupOf(vid) });
+        vid.classList.add('lb-trigger');
+        vid.style.cursor = 'zoom-in';
+        vid.addEventListener('click', function() { open(idx); });
+      });
+    }
+
+    function showItem(item) {
+      if (item.type === 'video') {
+        lbImg.hidden = true;
+        lbVideo.hidden = false;
+        lbVideo.src = item.src;
+        lbVideo.load();
+        lbVideo.play().catch(function(){});
+      } else {
+        lbVideo.hidden = true;
+        lbVideo.pause();
+        lbVideo.src = '';
+        lbImg.hidden = false;
+        lbImg.src = item.src;
+        lbImg.alt = item.alt;
+      }
+    }
+
+    function open(idx) {
+      var item = items[idx];
+      currentGroup = items.filter(function(i) { return i.group === item.group; });
+      groupIdx = currentGroup.indexOf(item);
+      showItem(currentGroup[groupIdx]);
+      updateNav();
+      overlay.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function close() {
+      overlay.classList.remove('is-open');
+      document.body.style.overflow = '';
+      setTimeout(function() {
+        lbImg.src = '';
+        lbVideo.pause();
+        lbVideo.src = '';
+      }, 300);
+    }
+
+    function go(dir) {
+      var next = groupIdx + dir;
+      if (next < 0 || next >= currentGroup.length) return;
+      overlay.classList.add('lb-switching');
+      setTimeout(function() {
+        groupIdx = next;
+        showItem(currentGroup[groupIdx]);
+        updateNav();
+        overlay.classList.remove('lb-switching');
+      }, 180);
+    }
+
+    function updateNav() {
+      lbPrev.hidden = groupIdx === 0;
+      lbNext.hidden = groupIdx === currentGroup.length - 1;
+      lbCounter.textContent = (currentGroup.length > 1) ? (groupIdx + 1) + ' / ' + currentGroup.length : '';
+    }
+
+    document.getElementById('lb-close').addEventListener('click', close);
+    lbPrev.addEventListener('click', function() { go(-1); });
+    lbNext.addEventListener('click', function() { go(+1); });
+    overlay.addEventListener('click', function(e) { if (e.target === overlay) close(); });
+    document.addEventListener('keydown', function(e) {
+      if (!overlay.classList.contains('is-open')) return;
+      if (e.key === 'Escape')     close();
+      if (e.key === 'ArrowLeft')  go(-1);
+      if (e.key === 'ArrowRight') go(+1);
+    });
+
+    collectItems();
+  })();
+  </script>
+
+</body>
+</html>
