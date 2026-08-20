@@ -4178,7 +4178,7 @@ html { scroll-behavior: smooth; }
               <!-- Control Actions Bar -->
               <div class="reel-controls-actions">
                 <div class="reel-controls-left">
-                  <button class="reel-btn-ctrl" id="reel-play-toggle-btn" aria-label="Play/Pause" title="Play / Pause (Space)" onclick="window._reelTogglePlay &amp;&amp; window._reelTogglePlay()">
+                  <button class="reel-btn-ctrl" id="reel-play-toggle-btn" aria-label="Play/Pause" title="Play / Pause (Space)">
                     <svg class="icon-play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                     <svg class="icon-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
                   </button>
@@ -4730,7 +4730,7 @@ html { scroll-behavior: smooth; }
             { name: 'Unity', logo: 'assets/images/logo_unity.png' }
           ],
           leftVideos: [
-            'assets/content/showreel_optimized/p4_left_yutani.mp4',
+            'assets/content/showreel_optimized/p4_left_yutani_polish.mp4',
             'assets/content/showreel_optimized/p4_left_jake.mp4',
             'assets/content/showreel_optimized/p4_left_hangouts.mp4'
           ],
@@ -4740,9 +4740,13 @@ html { scroll-behavior: smooth; }
             'Unity Character controllers'
           ],
           rightVideos: [
+            'assets/content/showreel_optimized/p4_right_yutani_animatic.mp4',
+            'assets/content/showreel_optimized/p4_right_yutani_blocking.mp4',
             'assets/content/showreel_optimized/p4_right_dog_composite.mp4'
           ],
           rightKeywords: [
+            'Animatics',
+            '3D Blocking',
             'Facial Rig',
             'Rigging',
             'Skinning'
@@ -5431,7 +5435,10 @@ html { scroll-behavior: smooth; }
       }
 
       if (playToggleBtn) {
-        playToggleBtn.addEventListener('click', togglePlay);
+        playToggleBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          togglePlay();
+        });
       }
 
       if (prevBtn) {
