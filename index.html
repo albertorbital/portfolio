@@ -1026,7 +1026,7 @@ html { scroll-behavior: smooth; }
       transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1), filter 240ms ease, opacity 240ms ease;
     }
 
-    /* Right Screen Wrap & Masked Frame */
+    /* Right Screen Wrap */
     .reel-video-wrap {
       position: relative;
       width: 100%;
@@ -1038,43 +1038,6 @@ html { scroll-behavior: smooth; }
       box-sizing: border-box;
       pointer-events: none;
       background: #060e1d;
-    }
-
-    .reel-right-frame {
-      position: relative;
-      aspect-ratio: 16/9;
-      max-height: 94%;
-      max-width: 90%;
-      width: 100%;
-      border: 3.5px solid rgba(255, 255, 255, 0.2);
-      border-radius: 24px;
-      background: #060e1d;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(0, 0, 0, 0.9);
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: aspect-ratio 320ms cubic-bezier(0.16, 1, 0.3, 1),
-                  max-width 320ms cubic-bezier(0.16, 1, 0.3, 1),
-                  max-height 320ms cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .reel-right-frame.is-square {
-      aspect-ratio: 1/1;
-      max-width: 70%;
-      max-height: 90%;
-      border-radius: 24px;
-    }
-
-    .reel-right-screen {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #060e1d;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1), filter 240ms ease, opacity 240ms ease;
     }
 
@@ -1087,17 +1050,24 @@ html { scroll-behavior: smooth; }
       pointer-events: none;
     }
 
-    .reel-device-screen .reel-video,
-    .reel-right-screen .reel-video {
+    .reel-device-screen .reel-video {
       object-fit: cover;
+    }
+
+    /* Mask only the borders of the right videos with a rounded shape */
+    .reel-video--right {
+      border-radius: 18px;
+      overflow: hidden;
+      clip-path: inset(0 round 18px);
+      -webkit-clip-path: inset(0 round 18px);
     }
 
     /* Engaging Video Transitions */
     .reel-device-screen.is-transitioning,
-    .reel-right-screen.is-transitioning {
-      transform: scale(0.96);
+    .reel-video-wrap.is-transitioning {
+      transform: scale(0.965);
       filter: brightness(1.28) contrast(1.1) blur(2px);
-      opacity: 0.7;
+      opacity: 0.75;
     }
 
     .reel-transition-flash {
@@ -1112,14 +1082,14 @@ html { scroll-behavior: smooth; }
     }
 
     .reel-device-screen.is-transitioning .reel-transition-flash,
-    .reel-right-screen.is-transitioning .reel-transition-flash {
+    .reel-video-wrap.is-transitioning .reel-transition-flash {
       opacity: 1;
       animation: reelFlashGlow 280ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     @keyframes reelFlashGlow {
-      0% { opacity: 0.95; transform: scale(1.1); filter: brightness(1.4); }
-      50% { opacity: 0.6; transform: scale(1.03); }
+      0% { opacity: 0.95; transform: scale(1.08); filter: brightness(1.35); }
+      50% { opacity: 0.6; transform: scale(1.02); }
       100% { opacity: 0; transform: scale(1); }
     }
 
@@ -4081,15 +4051,11 @@ html { scroll-behavior: smooth; }
                 <div class="reel-bot-keywords reel-bot-keywords--left is-active" id="reel-bot-keywords-left"></div>
               </div>
 
-              <!-- Right Side (Rounded Card / Device Mask) -->
+              <!-- Right Side (Natural Aspect Video with Masked Rounded Borders) -->
               <div class="reel-screen reel-screen--right" id="reel-screen-right">
-                <div class="reel-video-wrap">
-                  <div class="reel-right-frame" id="reel-right-frame">
-                    <div class="reel-right-screen" id="reel-right-screen">
-                      <div class="reel-transition-flash"></div>
-                      <video class="reel-video reel-video--right" id="reel-video-right" playsinline muted preload="auto" disablepictureinpicture disableremoteplayback></video>
-                    </div>
-                  </div>
+                <div class="reel-video-wrap" id="reel-right-screen">
+                  <div class="reel-transition-flash"></div>
+                  <video class="reel-video reel-video--right" id="reel-video-right" playsinline muted preload="auto" disablepictureinpicture disableremoteplayback></video>
                 </div>
                 <!-- Bottom Center Keywords -->
                 <div class="reel-bot-keywords reel-bot-keywords--right is-active" id="reel-bot-keywords-right"></div>
@@ -5082,7 +5048,7 @@ html { scroll-behavior: smooth; }
 
       function loadAndPlayVideo(video, src, offset, shouldPlay) {
         if (!video) return;
-        var screenEl = video.closest('.reel-device-screen') || video.closest('.reel-right-screen');
+        var screenEl = video.closest('.reel-device-screen') || video.closest('.reel-video-wrap');
         if (screenEl) {
           screenEl.classList.remove('is-transitioning');
           void screenEl.offsetWidth; // trigger reflow
