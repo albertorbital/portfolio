@@ -1023,7 +1023,7 @@ html { scroll-behavior: smooth; }
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1), filter 240ms ease, opacity 240ms ease;
+      transition: opacity 280ms ease;
     }
 
     /* Right Screen Wrap */
@@ -1038,7 +1038,6 @@ html { scroll-behavior: smooth; }
       box-sizing: border-box;
       pointer-events: none;
       background: #060e1d;
-      transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1), filter 240ms ease, opacity 240ms ease;
     }
 
     .reel-video {
@@ -1055,42 +1054,45 @@ html { scroll-behavior: smooth; }
     }
 
     /* Mask only the borders of the right videos with a rounded shape */
-    .reel-video--right {
+    .reel-right-viewport {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border-radius: 18px;
       overflow: hidden;
       clip-path: inset(0 round 18px);
       -webkit-clip-path: inset(0 round 18px);
     }
 
-    /* Engaging Video Transitions */
-    .reel-device-screen.is-transitioning,
-    .reel-video-wrap.is-transitioning {
-      transform: scale(0.965);
-      filter: brightness(1.28) contrast(1.1) blur(2px);
-      opacity: 0.75;
+    .reel-right-viewport .reel-video--right {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 18px;
+      overflow: hidden;
+      clip-path: inset(0 round 18px);
+      -webkit-clip-path: inset(0 round 18px);
+      opacity: 0;
+      transition: opacity 350ms cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .reel-right-viewport .reel-video--right.is-active {
+      opacity: 1;
+    }
+
+    /* Smooth, comfortable video transitions */
+    .reel-device-screen.is-transitioning {
+      opacity: 0.85;
     }
 
     .reel-transition-flash {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: radial-gradient(circle at center, rgba(240, 192, 64, 0.45) 0%, rgba(56, 190, 181, 0.25) 45%, transparent 75%);
-      opacity: 0;
-      mix-blend-mode: screen;
-      z-index: 5;
-      transition: opacity 200ms ease;
-    }
-
-    .reel-device-screen.is-transitioning .reel-transition-flash,
-    .reel-video-wrap.is-transitioning .reel-transition-flash {
-      opacity: 1;
-      animation: reelFlashGlow 280ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    @keyframes reelFlashGlow {
-      0% { opacity: 0.95; transform: scale(1.08); filter: brightness(1.35); }
-      50% { opacity: 0.6; transform: scale(1.02); }
-      100% { opacity: 0; transform: scale(1); }
+      display: none !important;
     }
 
     /* Hide browser default video overlays */
@@ -3957,10 +3959,10 @@ html { scroll-behavior: smooth; }
 
       <div class="work-header">
         <div class="work-header-left">
-          <h2 class="work-heading" id="work-heading">&lt; Mobile Games Development &gt;</h2>
+          <h2 class="work-heading" id="work-heading">&lt; Game Development &gt;</h2>
         </div>
         <div class="work-header-right">
-          <p class="work-desc">As a game artist with over 6 years of experience, I bridge the gap between art and tech, working as both an <em>animator</em> and <em>technical artist</em>. My Mobile Dev portfolio showcases a versatile skill set in concept art, game art, rigging, and 2D/3D animation for mobile games, built using industry-standard tools like Unity, Unreal Engine, Maya, Blender, and Spine.</p>
+          <p class="work-desc">As a game artist with over 6 years of experience, I bridge the gap between art and tech, working as both an <em>animator</em> and <em>technical artist</em>. My Mobile Dev portfolio showcases a versatile skill set in concept art, game art, rigging, and 2D/3D animation for games, built using industry-standard tools like Unity, Unreal Engine, Maya, Blender, and Spine.</p>
         </div>
       </div>
 
@@ -4054,8 +4056,10 @@ html { scroll-behavior: smooth; }
               <!-- Right Side (Natural Aspect Video with Masked Rounded Borders) -->
               <div class="reel-screen reel-screen--right" id="reel-screen-right">
                 <div class="reel-video-wrap" id="reel-right-screen">
-                  <div class="reel-transition-flash"></div>
-                  <video class="reel-video reel-video--right" id="reel-video-right" playsinline muted preload="auto" disablepictureinpicture disableremoteplayback></video>
+                  <div class="reel-right-viewport">
+                    <video class="reel-video reel-video--right is-active" id="reel-video-right-a" playsinline muted preload="auto" disablepictureinpicture disableremoteplayback></video>
+                    <video class="reel-video reel-video--right" id="reel-video-right-b" playsinline muted preload="auto" disablepictureinpicture disableremoteplayback></video>
+                  </div>
                 </div>
                 <!-- Bottom Center Keywords -->
                 <div class="reel-bot-keywords reel-bot-keywords--right is-active" id="reel-bot-keywords-right"></div>
@@ -4684,7 +4688,7 @@ html { scroll-behavior: smooth; }
         },
         {
           id: 'monopoly',
-          title: 'Monopoly Go',
+          title: 'Monopoly Match',
           companyName: 'Outplay Entertainment',
           companyLogo: 'assets/images/logo_outplay.jpg',
           projectLogo: 'assets/images/logo_Monopoly.png',
@@ -4836,7 +4840,16 @@ html { scroll-behavior: smooth; }
 
       // DOM Elements
       var videoLeft           = document.getElementById('reel-video-left');
-      var videoRight          = document.getElementById('reel-video-right');
+      var videoRightA         = document.getElementById('reel-video-right-a');
+      var videoRightB         = document.getElementById('reel-video-right-b');
+      var activeRightIdx      = 0;
+
+      function getActiveRightVideo() {
+        return activeRightIdx === 0 ? videoRightA : videoRightB;
+      }
+      function getInactiveRightVideo() {
+        return activeRightIdx === 0 ? videoRightB : videoRightA;
+      }
       var leftDeviceFrame     = document.getElementById('reel-left-device-frame');
       var tagLeft             = document.getElementById('reel-tag-left');
       var tagLeftText         = document.getElementById('reel-tag-left-text');
@@ -4936,9 +4949,12 @@ html { scroll-behavior: smooth; }
       videoLeft.muted = true;
       videoLeft.loop = true;
       videoLeft.playsInline = true;
-      videoRight.muted = true;
-      videoRight.loop = true;
-      videoRight.playsInline = true;
+      videoRightA.muted = true;
+      videoRightA.loop = true;
+      videoRightA.playsInline = true;
+      videoRightB.muted = true;
+      videoRightB.loop = true;
+      videoRightB.playsInline = true;
 
       // Build Segmented Progress Bar
       segmentsBar.innerHTML = '';
@@ -5098,6 +5114,61 @@ html { scroll-behavior: smooth; }
         }
       }
 
+      function transitionRightVideo(src, offset, shouldPlay, isImmediate) {
+        var currentVid = getActiveRightVideo();
+        var incomingVid = getInactiveRightVideo();
+
+        if (isImmediate) {
+          incomingVid.classList.remove('is-active');
+          incomingVid.pause();
+          currentVid.src = src;
+          currentVid.playbackRate = playbackRate;
+          currentVid.loop = true;
+          currentVid.muted = true;
+          currentVid.playsInline = true;
+          currentVid.classList.add('is-active');
+          if (offset > 0) {
+            try { currentVid.currentTime = offset; } catch (e) {}
+          }
+          if (shouldPlay) {
+            currentVid.play().catch(function() {});
+          }
+          return;
+        }
+
+        incomingVid.src = src;
+        incomingVid.playbackRate = playbackRate;
+        incomingVid.loop = true;
+        incomingVid.muted = true;
+        incomingVid.playsInline = true;
+
+        var startTransition = function() {
+          incomingVid.removeEventListener('loadeddata', startTransition);
+          incomingVid.playbackRate = playbackRate;
+          if (offset > 0 && Number.isFinite(incomingVid.duration) && incomingVid.duration > 0) {
+            try { incomingVid.currentTime = offset % incomingVid.duration; } catch (e) {}
+          }
+          if (shouldPlay) {
+            incomingVid.play().catch(function() {});
+          }
+          incomingVid.classList.add('is-active');
+          currentVid.classList.remove('is-active');
+          activeRightIdx = 1 - activeRightIdx;
+          setTimeout(function() {
+            if (!currentVid.classList.contains('is-active')) {
+              currentVid.pause();
+            }
+          }, 360);
+        };
+
+        if (incomingVid.readyState >= 2) {
+          startTransition();
+        } else {
+          incomingVid.addEventListener('loadeddata', startTransition, { once: true });
+          incomingVid.load();
+        }
+      }
+
       function syncVideos(project, projectTime, forceSeek) {
         // Left video selection: GOT custom clip split
         var leftClips = project.leftVideos;
@@ -5136,10 +5207,11 @@ html { scroll-behavior: smooth; }
 
         if (activeRightClip !== targetRightSrc) {
           activeRightClip = targetRightSrc;
-          loadAndPlayVideo(videoRight, targetRightSrc, rightOffset, isPlaying);
+          transitionRightVideo(targetRightSrc, rightOffset, isPlaying, forceSeek);
         } else if (forceSeek) {
-          if (videoRight.readyState >= 1 && Number.isFinite(videoRight.duration) && videoRight.duration > 0) {
-            try { videoRight.currentTime = rightOffset % videoRight.duration; } catch (e) {}
+          var curRightVid = getActiveRightVideo();
+          if (curRightVid.readyState >= 1 && Number.isFinite(curRightVid.duration) && curRightVid.duration > 0) {
+            try { curRightVid.currentTime = rightOffset % curRightVid.duration; } catch (e) {}
           }
         }
       }
@@ -5282,7 +5354,8 @@ html { scroll-behavior: smooth; }
         // Ensure playback continues on both videos if unpaused
         if (isPlaying) {
           if (videoLeft.paused && videoLeft.readyState >= 2) videoLeft.play().catch(function() {});
-          if (videoRight.paused && videoRight.readyState >= 2) videoRight.play().catch(function() {});
+          var curRightVid = getActiveRightVideo();
+          if (curRightVid.paused && curRightVid.readyState >= 2) curRightVid.play().catch(function() {});
         }
 
         requestAnimationFrame(tick);
@@ -5299,9 +5372,10 @@ html { scroll-behavior: smooth; }
         if (iconPlay) iconPlay.style.display = 'none';
         if (iconPause) iconPause.style.display = 'block';
         videoLeft.playbackRate = playbackRate;
-        videoRight.playbackRate = playbackRate;
+        videoRightA.playbackRate = playbackRate;
+        videoRightB.playbackRate = playbackRate;
         videoLeft.play().catch(function() {});
-        videoRight.play().catch(function() {});
+        getActiveRightVideo().play().catch(function() {});
         lastTimestamp = null;
         resetIdleTimer();
         requestAnimationFrame(tick);
@@ -5316,7 +5390,8 @@ html { scroll-behavior: smooth; }
         if (iconPlay) iconPlay.style.display = 'block';
         if (iconPause) iconPause.style.display = 'none';
         videoLeft.pause();
-        videoRight.pause();
+        videoRightA.pause();
+        videoRightB.pause();
         container.classList.remove('is-idle');
         clearTimeout(idleTimer);
       }
@@ -5345,7 +5420,8 @@ html { scroll-behavior: smooth; }
           playbackRate = (playbackRate === 1.0) ? 2.0 : 1.0;
           speedBtn.textContent = playbackRate + 'x';
           videoLeft.playbackRate = playbackRate;
-          videoRight.playbackRate = playbackRate;
+          videoRightA.playbackRate = playbackRate;
+          videoRightB.playbackRate = playbackRate;
         });
       }
 
@@ -5389,7 +5465,7 @@ html { scroll-behavior: smooth; }
           timelineWrap.classList.remove('is-dragging');
           if (isPlaying) {
             videoLeft.play().catch(function() {});
-            videoRight.play().catch(function() {});
+            getActiveRightVideo().play().catch(function() {});
           }
         }
       });
